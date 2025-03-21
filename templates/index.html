@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salt Level Prediction</title>
+</head>
+<body>
+    <h1>Salt Level Prediction</h1>
+    <form id="prediction-form">
+        <label for="voltage">Enter Voltage (mV):</label>
+        <input type="number" id="voltage" name="voltage" required>
+        <button type="submit">Predict</button>
+    </form>
+    <h2 id="result"></h2>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const voltage = document.getElementById('voltage').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ voltage: parseFloat(voltage) })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = 'Predicted Salt Level: ' + data.salt_level;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'Error predicting salt level.';
+            });
+        });
+    </script>
+</body>
+</html>
